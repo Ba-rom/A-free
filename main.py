@@ -29,7 +29,7 @@ video_writer = set_video_writer(cap, write_fps=int(7.0))
 
 
 # # 훈련용 관절 데이터를 저장하는 txt 파일(for training)
-# f = open('origin_data.txt', 'a+')
+f = open('C:\\Users\\kim0b\\Project\\A_free_pose\\data\\text\\taekwondo1-3.txt', 'a+')
 
 while cv.waitKey(1) < 0:
     has_frame, show = cap.read()
@@ -69,10 +69,10 @@ while cv.waitKey(1) < 0:
         video_writer.write(show)
 
         # # 훈련 과정을 위한 데이터 수집(for training)
-        # joints_norm_per_frame = np.array(pose[-1]).astype(np.str)
-        # f.write(' '.join(joints_norm_per_frame))
-        # f.write('\n')
+        joints_norm_per_frame = np.array(pose[-1]).astype(np.str)
+        f.write(' '.join(joints_norm_per_frame))
+        f.write('\n')
 
 video_writer.release()
 cap.release()
-# f.close()
+f.close()
