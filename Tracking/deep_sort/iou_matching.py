@@ -6,6 +6,7 @@ from . import linear_assignment
 
 def iou(bbox, candidates):
     """Computer intersection over union.
+
     Parameters
     ----------
     bbox : ndarray
@@ -13,12 +14,14 @@ def iou(bbox, candidates):
     candidates : ndarray
         A matrix of candidate bounding boxes (one per row) in the same format
         as `bbox`.
+
     Returns
     -------
     ndarray
         The intersection over union in [0, 1] between the `bbox` and each
         candidate. A higher score means a larger fraction of the `bbox` is
         occluded by the candidate.
+
     """
     bbox_tl, bbox_br = bbox[:2], bbox[:2] + bbox[2:]
     candidates_tl = candidates[:, :2]
@@ -39,6 +42,7 @@ def iou(bbox, candidates):
 def iou_cost(tracks, detections, track_indices=None,
              detection_indices=None):
     """An intersection over union distance metric.
+
     Parameters
     ----------
     tracks : List[deep_sort.track.Track]
@@ -51,12 +55,14 @@ def iou_cost(tracks, detections, track_indices=None,
     detection_indices : Optional[List[int]]
         A list of indices to detections that should be matched. Defaults
         to all `detections`.
+
     Returns
     -------
     ndarray
         Returns a cost matrix of shape
         len(track_indices), len(detection_indices) where entry (i, j) is
         `1 - iou(tracks[track_indices[i]], detections[detection_indices[j]])`.
+
     """
     if track_indices is None:
         track_indices = np.arange(len(tracks))

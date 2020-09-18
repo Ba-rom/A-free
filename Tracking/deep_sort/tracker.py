@@ -9,6 +9,7 @@ from .track import Track
 class Tracker:
     """
     This is the multi-target tracker.
+
     Parameters
     ----------
     metric : nn_matching.NearestNeighborDistanceMetric
@@ -19,6 +20,7 @@ class Tracker:
         Number of consecutive detections before the track is confirmed. The
         track state is set to `Deleted` if a miss occurs within the first
         `n_init` frames.
+
     Attributes
     ----------
     metric : nn_matching.NearestNeighborDistanceMetric
@@ -31,6 +33,7 @@ class Tracker:
         A Kalman filter to filter target trajectories in image space.
     tracks : List[Track]
         The list of active tracks at the current time step.
+
     """
 
     def __init__(self, metric, max_iou_distance=0.7, max_age=30, n_init=3):
@@ -45,6 +48,7 @@ class Tracker:
 
     def predict(self):
         """Propagate track state distributions one time step forward.
+
         This function should be called once every time step, before `update`.
         """
         for track in self.tracks:
@@ -52,10 +56,12 @@ class Tracker:
 
     def update(self, detections):
         """Perform measurement update and track management.
+
         Parameters
         ----------
         detections : List[deep_sort.detection.Detection]
             A list of detections at the current time step.
+
         """
         # Run matching cascade.
         matches, unmatched_tracks, unmatched_detections = self._match(detections)

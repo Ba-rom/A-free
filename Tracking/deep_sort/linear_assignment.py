@@ -10,6 +10,7 @@ def min_cost_matching(
         distance_metric, max_distance, tracks, detections, track_indices=None,
         detection_indices=None):
     """Solve linear assignment problem.
+
     Parameters
     ----------
     distance_metric : Callable[List[Track], List[Detection], List[int], List[int]) -> ndarray
@@ -31,6 +32,7 @@ def min_cost_matching(
     detection_indices : List[int]
         List of detection indices that maps columns in `cost_matrix` to
         detections in `detections` (see description above).
+
     Returns
     -------
     (List[(int, int)], List[int], List[int])
@@ -38,6 +40,7 @@ def min_cost_matching(
         * A list of matched track and detection indices.
         * A list of unmatched track indices.
         * A list of unmatched detection indices.
+
     """
     if track_indices is None:
         track_indices = np.arange(len(tracks))
@@ -74,6 +77,7 @@ def matching_cascade(
         distance_metric, max_distance, cascade_depth, tracks, detections,
         track_indices=None, detection_indices=None):
     """Run matching cascade.
+
     Parameters
     ----------
     distance_metric : Callable[List[Track], List[Detection], List[int], List[int]) -> ndarray
@@ -98,6 +102,7 @@ def matching_cascade(
         List of detection indices that maps columns in `cost_matrix` to
         detections in `detections` (see description above). Defaults to all
         detections.
+
     Returns
     -------
     (List[(int, int)], List[int], List[int])
@@ -105,6 +110,7 @@ def matching_cascade(
         * A list of matched track and detection indices.
         * A list of unmatched track indices.
         * A list of unmatched detection indices.
+
     """
     if track_indices is None:
         track_indices = list(range(len(tracks)))
@@ -138,6 +144,7 @@ def gate_cost_matrix(
         gated_cost=INFTY_COST, only_position=False):
     """Invalidate infeasible entries in cost matrix based on the state
     distributions obtained by Kalman filtering.
+
     Parameters
     ----------
     kf : The Kalman filter.
@@ -162,10 +169,12 @@ def gate_cost_matrix(
     only_position : Optional[bool]
         If True, only the x, y position of the state distribution is considered
         during gating. Defaults to False.
+
     Returns
     -------
     ndarray
         Returns the modified cost matrix.
+
     """
     gating_dim = 2 if only_position else 4
     gating_threshold = kalman_filter.chi2inv95[gating_dim]

@@ -11,11 +11,11 @@ parser = argparse.ArgumentParser(description='Action Recognition by OpenPose')
 parser.add_argument('--video', help='Path to video file.')
 args = parser.parse_args()
 
-# 관련 모델 가져오기
+# 导入相关模型
 estimator = load_pretrain_model('VGG_origin')
 action_classifier = load_action_premodel('Action/framewise_recognition.h5')
 
-# 매개변수 초기화
+# 参数初始化
 realtime_fps = '0.0000'
 start_time = time.time()
 fps_interval = 1
@@ -23,13 +23,13 @@ fps_count = 0
 run_timer = 0
 frame_count = 0
 
-# 비디오 파일 읽기 및 쓰기(웹캠 입력에 대해서만 테스트 됨)
+# 读写视频文件（仅测试过webcam输入）
 cap = choose_run_mode(args)
 video_writer = set_video_writer(cap, write_fps=int(7.0))
 
 
-# # 훈련용 관절 데이터를 저장하는 txt 파일(for training)
-# f = open('origin_data.txt', 'a+')
+# # 保存关节数据的txt文件，用于训练过程(for training)
+f = open('origin_data.txt', 'a+')
 
 while cv.waitKey(1) < 0:
     has_frame, show = cap.read()
@@ -45,20 +45,20 @@ while cv.waitKey(1) < 0:
         show = framewise_recognize(pose, action_classifier)
 
         height, width = show.shape[:2]
-        # 실시간 FPS 값 표시
+        # 显示实时FPS值
         if (time.time() - start_time) > fps_interval:
-            # 인터벌 프로세스의 프레임 수를 계산. 인터벌이 1초이면 FPS임
+            # 计算这个interval过程中的帧数，若interval为1秒，则为FPS
             realtime_fps = fps_count / (time.time() - start_time)
-            fps_count = 0  # 프레임 수 지우기
+            fps_count = 0  # 帧数清零
             start_time = time.time()
         fps_label = 'FPS:{0:.2f}'.format(realtime_fps)
         cv.putText(show, fps_label, (width-160, 25), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
 
-        # 감지된 사람 수 표시
+        # 显示检测到的人数
         num_label = "Human: {0}".format(len(humans))
         cv.putText(show, num_label, (5, height-45), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
 
-        # 현재 실행 시간과 총 프레임 수를 표시
+        # 显示目前的运行时长及总帧数
         if frame_count == 1:
             run_timer = time.time()
         run_time = time.time() - run_timer
@@ -68,11 +68,11 @@ while cv.waitKey(1) < 0:
         cv.imshow('Action Recognition based on OpenPose', show)
         video_writer.write(show)
 
-        # # 훈련 과정을 위한 데이터 수집(for training)
-        # joints_norm_per_frame = np.array(pose[-1]).astype(np.str)
-        # f.write(' '.join(joints_norm_per_frame))
-        # f.write('\n')
+        # 采集数据，用于训练过程(for training)
+        joints_norm_per_frame = np.array(pose[-1]).astype(np.str)
+        f.write(' '.join(joints_norm_per_frame))
+        f.write('\n')
 
 video_writer.release()
 cap.release()
-# f.close()
+f.close()

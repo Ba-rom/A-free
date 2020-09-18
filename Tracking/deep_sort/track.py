@@ -6,6 +6,7 @@ class TrackState:
     the track state is changed to `confirmed`. Tracks that are no longer alive
     are classified as `deleted` to mark them for removal from the set of active
     tracks.
+
     """
 
     Tentative = 1
@@ -18,6 +19,7 @@ class Track:
     A single target track with state space `(x, y, a, h)` and associated
     velocities, where `(x, y)` is the center of the bounding box, `a` is the
     aspect ratio and `h` is the height.
+
     Parameters
     ----------
     mean : ndarray
@@ -26,15 +28,19 @@ class Track:
         Covariance matrix of the initial state distribution.
     track_id : int
         A unique track identifier.
+
     n_init : int
         连续 n_init 帧检测到某一track，则将该track定义为confirmed；
         若在这 n_init 帧中track出现丢失，则直接定为deleted
+
     max_age : int
         连续 max_age 帧没有检测到某一track，将其定义为deleted
+
     feature : Optional[ndarray]
         Feature vector of the detection this track originates from. If not None,
         this feature is added to the `features` cache.
-OAOA    Attributes
+
+    Attributes
     ----------
     mean : ndarray
         Mean vector of the initial state distribution.（均值向量）
@@ -53,6 +59,7 @@ class Track:
     features : List[ndarray]
         A cache of features. On each measurement update, the associated feature
         vector is added to this list.
+
     """
 
     def __init__(self, mean, covariance, track_id, n_init, max_age, feature=None):
@@ -90,6 +97,7 @@ class Track:
 
     def predict(self, kf):
         """Propagate the state distribution to the current time step using a Kalman filter prediction step.
+
         """
         self.mean, self.covariance = kf.predict(self.mean, self.covariance)
         self.age += 1
@@ -97,12 +105,14 @@ class Track:
 
     def update(self, kf, detection):
         """Perform Kalman filter measurement update step and update the feature cache.
+
         Parameters
         ----------
         kf : kalman_filter.KalmanFilter
             The Kalman filter.
         detection : Detection
             The associated detection.
+
         """
         self.mean, self.covariance = kf.update(self.mean, self.covariance, detection.to_xyah())
         self.features.append(detection.feature)

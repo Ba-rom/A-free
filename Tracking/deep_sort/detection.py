@@ -4,8 +4,10 @@ import numpy as np
 class Detection(object):
     """
     This class represents a bounding box detection in a single image.
+
     feature : ndarray | NoneType
         A feature vector that describes the object contained in this image.
+
     """
 
     def __init__(self, tlwh, confidence, feature):
