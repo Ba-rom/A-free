@@ -10,9 +10,6 @@ from Tracking.deep_sort.tracker import Tracker
 from keras.models import load_model
 from .action_enum import Actions
 
-# Use Deep-sort(Simple Online and Realtime Tracking)
-# To track multi-person for multi-person actions recognition
-
 # 기본 매개 변수 정의
 file_path = Path.cwd()
 clip_length = 15
@@ -146,18 +143,18 @@ def framewise_recognize(pose, pretrained_model):
                 #  현재 프래임에 사람이 없으면 기본값 j=0(무효)
                 j = 0
 
-            # 进行动作分类
+            # 행동 분류 수행
             if joints_norm_per_frame.size > 0:
                 joints_norm_single_person = joints_norm_per_frame[j*36:(j+1)*36]
                 joints_norm_single_person = np.array(joints_norm_single_person).reshape(-1, 36)
                 pred = np.argmax(pretrained_model.predict(joints_norm_single_person))
                 init_label = Actions(pred).name
-                # 显示动作类别
+                # Action 카테고리 표시
                 cv.putText(frame, init_label, (xmin + 80, ymin - 45), cv.FONT_HERSHEY_SIMPLEX, 1, trk_clr, 3)
-                # 异常预警(under scene)
+                # 비정상적인 경고(under scene)
                 if init_label == 'fall_down':
                     cv.putText(frame, 'WARNING: someone is falling down!', (20, 60), cv.FONT_HERSHEY_SIMPLEX,
                                1.5, (0, 0, 255), 4)
-            # 画track_box
+            # track_box 그리기
             cv.rectangle(frame, (xmin - 10, ymin - 30), (xmax + 10, ymax), trk_clr, 2)
     return frame

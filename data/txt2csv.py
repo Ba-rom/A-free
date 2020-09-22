@@ -11,7 +11,7 @@ if (len(args)) % 3 != 2:
 
 count = len(args) // 3
 
-data_path = 'C:\\Users\\ROM\\Project\\A-free\\data\\' # 각자 path 변경 필요
+data_path = 'C:\\Users\\kim0b\\Project\\A_free_pose\\data\\' # 각자 path 변경 필요
 
 txt_file_name = data_path + 'txt_data\\' + args[0] + '.txt' # 각자 path 변경 필요
 

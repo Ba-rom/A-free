@@ -15,21 +15,11 @@ from keras.callbacks import Callback
 import itertools
 from sklearn.metrics import confusion_matrix
 
-
 class Actions(Enum):
-    # framewise_recognition.h5
-    # squat = 0
-    # stand = 1
-    # walk = 2
-    # wave = 3
-
-    # framewise_recognition_under_scene.h5
-    stand = 0
-    walk = 1
-    operate = 2
-    fall_down = 3
-    # run = 4
-
+    # taekwondo_recognition.h5
+    etc = 0
+    body_kick = 1
+    head_kick = 2
 
 # Callback class to visialize training progress
 class LossHistory(Callback):
@@ -69,7 +59,6 @@ class LossHistory(Callback):
         plt.legend(loc="upper right")
         plt.show()
 
-
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
                           title='Confusion matrix',
@@ -104,21 +93,18 @@ def plot_confusion_matrix(cm, classes,
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
 
-
 # load data
-raw_data = pd.read_csv('data_with_scene.csv', header=0)
+raw_data = pd.read_csv('taekwondo_data.csv', header=None)
+raw_data = raw_data.dropna(axis=0)
 dataset = raw_data.values
-# X = dataset[:, 0:36].astype(float)
-# Y = dataset[:, 36]
-X = dataset[0:3289, 0:36].astype(float)  # 忽略run数据
-Y = dataset[0:3289, 36]
+X = dataset[:, :36].astype(float)
+Y = dataset[:, 36].astype(int)
 
-# 将类别编码为数字
 # encoder = LabelEncoder()
 # encoder_Y = encoder.fit_transform(Y)
 # print(encoder_Y[0], encoder_Y[900], encoder_Y[1800], encoder_Y[2700])
 # encoder_Y = [0]*744 + [1]*722 + [2]*815 + [3]*1008 + [4]*811
-encoder_Y = [0]*744 + [1]*722 + [2]*815 + [3]*1008
+encoder_Y = [0]*9379 + [1]*2007 + [2]*462
 # one hot 编码
 dummy_Y = np_utils.to_categorical(encoder_Y)
 
@@ -127,39 +113,42 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, dummy_Y, test_size=0.1, r
 
 # build keras model
 model = Sequential()
-model.add(Dense(units=128, activation='relu'))
+model.add(Dense(units=128, input_dim=36, activation='relu'))
 model.add(BatchNormalization())
 model.add(Dense(units=64, activation='relu'))
 model.add(BatchNormalization())
 model.add(Dense(units=16, activation='relu'))
 model.add(BatchNormalization())
-model.add(Dense(units=4, activation='softmax'))  # units = nums of classes
+model.add(Dense(units=3, activation='softmax'))  # units = nums of classes
 
 # training
 his = LossHistory()
-model.compile(loss='categorical_crossentropy', optimizer=Adam(0.0001), metrics=['accuracy'])
+# model.compile(loss='categorical_crossentropy', optimizer=Adam(0.0001), metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 model.fit(X_train, Y_train, batch_size=32, epochs=20, verbose=1, validation_data=(X_test, Y_test), callbacks=[his])
 model.summary()
 his.loss_plot('epoch')
-# model.save('framewise_recognition.h5')
+# model.save('taekwondo_recognition.h5')
+model.save('rmsprop_taekwondo_recognition.h5')
 
 # # evaluate and draw confusion matrix
-# print('Test:')
-# score, accuracy = model.evaluate(X_test,Y_test,batch_size=32)
-# print('Test Score:{:.3}'.format(score))
-# print('Test accuracy:{:.3}'.format(accuracy))
-# # confusion matrix
-# Y_pred = model.predict(X_test)
-# cfm = confusion_matrix(np.argmax(Y_test,axis=1), np.argmax(Y_pred, axis=1))
-# np.set_printoptions(precision=2)
-#
-# plt.figure()
-# class_names = ['squat', 'stand', 'walk', 'wave']
-# plot_confusion_matrix(cfm, classes=class_names, title='Confusion Matrix')
-# plt.show()
+print('Test:')
+score, accuracy = model.evaluate(X_test,Y_test,batch_size=32)
+print('Test Score:{:.3}'.format(score))
+print('Test accuracy:{:.3}'.format(accuracy))
+# confusion matrix
+Y_pred = model.predict(X_test)
+cfm = confusion_matrix(np.argmax(Y_test,axis=1), np.argmax(Y_pred, axis=1))
+np.set_printoptions(precision=2)
 
-# # test
-# model = load_model('framewise_recognition.h5')
+plt.figure()
+class_names = ['etc', 'body_kick', 'head_kick']
+plot_confusion_matrix(cfm, classes=class_names, title='Confusion Matrix')
+plt.show()
+
+# test
+# model = load_model('taekwondo_recognition.h5')
+# model = load_model('rmsprop_taekwondo_recognition.h5')
 #
 # test_input = [0.43, 0.46, 0.43, 0.52, 0.4, 0.52, 0.39, 0.61, 0.4,
 #               0.67, 0.46, 0.52, 0.46, 0.61, 0.46, 0.67, 0.42, 0.67,
