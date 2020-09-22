@@ -50,6 +50,6 @@ def load_pretrain_model(model):
 
 def set_video_writer(cap, write_fps=15):
     return cv.VideoWriter(out_file_path,
-                          cv.VideoWriter_fourcc(*'mp4v'),
+                          cv.VideoWriter_fourcc(*'H264'),
                           write_fps,
                           (round(cap.get(cv.CAP_PROP_FRAME_WIDTH)), round(cap.get(cv.CAP_PROP_FRAME_HEIGHT))))
