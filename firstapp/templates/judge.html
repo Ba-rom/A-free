@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/judge.css" />
+    <meta charset="utf-8">
+    <title>Convert</title>
+</head>
+<body>
+    <div class="total">
+        <h1>convert has done</h1>
+        </br> 
+        <h2> ' {{a}} '  </h2>
+        <div class="button">
+            <form action="{% url 'result' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="a" value="{{a}}">
+                <input value="Play" type="submit">
+            </form>
+        </div
+    </div>
+</body>
+</html>

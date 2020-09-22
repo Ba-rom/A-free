@@ -1,0 +1,26 @@
+{% load static %}
+{% static "" as baseUrl %}
+<!doctype html>
+<html lang="ko">
+  <head>
+  <meta charset="utf-8">
+    <title>Result</title>
+    <link rel="stylesheet" href="../static/result.css" />
+    <style>
+      video { max-width: 80%; display: block; margin: 20px auto; }
+    </style>
+  </head>
+  <body>
+    <div class="box_container">
+      <div class="box1">
+        <h1>{{b1}} is playing</h1>
+      </div>
+      <div class="box">
+        <div class="box3">
+          <video controls autoplay>
+            <source src="{% static b1 %}" type="video/mp4">
+          </video>
+          </div>
+        </div>
+  </body>
+</html>

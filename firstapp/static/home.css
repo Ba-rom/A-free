@@ -1,0 +1,36 @@
+.box {
+    display: flex;
+    flex-direction: column;
+}
+.box_h {
+    display: flex;
+    align-items: center;
+    justify-content : space-around;
+    font-weight: bold;
+    font-size : 50px;
+    color: gray;
+}
+.box_p {
+    display: flex;
+    align-items: center;
+    justify-content : space-around;
+    font-weight: bold;
+    font-size : 30px;
+    color: rgb(92, 90, 90);
+}
+
+.button1 {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px
+}
+
+.text {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+.button2 {
+    display: flex;
+    justify-content: center;
+}
