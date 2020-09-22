@@ -11,9 +11,9 @@ parser = argparse.ArgumentParser(description='Action Recognition by OpenPose')
 parser.add_argument('--video', help='Path to video file.')
 args = parser.parse_args()
 
-# 관련 모델 가져오기
+# 모델 불러오기
 estimator = load_pretrain_model('VGG_origin')
-action_classifier = load_action_premodel('Action/framewise_recognition.h5')
+action_classifier = load_action_premodel('Action/taekwondo_recognition.h5')
 
 # 매개변수 초기화
 realtime_fps = '0.0000'
@@ -23,13 +23,12 @@ fps_count = 0
 run_timer = 0
 frame_count = 0
 
-# 비디오 파일 읽기 및 쓰기(웹캠 입력에 대해서만 테스트 됨)
+# video file 읽기 및 쓰기
 cap = choose_run_mode(args)
 video_writer = set_video_writer(cap, write_fps=int(7.0))
 
-
-# # 훈련용 관절 데이터를 저장하는 txt 파일(for training)
-f = open('C:\\Users\\kim0b\\Project\\A_free_pose\\data\\text\\taekwondo1-3.txt', 'a+')
+# skeleton data for Training을 txt 파일로 저장
+# f = open('data\\txt_data\\taekwondoskill2-3-1.txt', 'a+')
 
 while cv.waitKey(1) < 0:
     has_frame, show = cap.read()
@@ -47,7 +46,7 @@ while cv.waitKey(1) < 0:
         height, width = show.shape[:2]
         # 실시간 FPS 값 표시
         if (time.time() - start_time) > fps_interval:
-            # 인터벌 프로세스의 프레임 수를 계산. 인터벌이 1초이면 FPS임
+            # calculate the number of frames in this interval, if interval is 1second(FPS)
             realtime_fps = fps_count / (time.time() - start_time)
             fps_count = 0  # 프레임 수 지우기
             start_time = time.time()
@@ -68,11 +67,11 @@ while cv.waitKey(1) < 0:
         cv.imshow('Action Recognition based on OpenPose', show)
         video_writer.write(show)
 
-        # # 훈련 과정을 위한 데이터 수집(for training)
-        joints_norm_per_frame = np.array(pose[-1]).astype(np.str)
-        f.write(' '.join(joints_norm_per_frame))
-        f.write('\n')
+        # skeleton data for Training을 txt 파일로 저장
+        # joints_norm_per_frame = np.array(pose[-1]).astype(np.str)
+        # f.write(' '.join(joints_norm_per_frame))
+        # f.write('\n')
 
 video_writer.release()
 cap.release()
-f.close()
+# f.close()
