@@ -94,7 +94,7 @@ def plot_confusion_matrix(cm, classes,
     plt.xlabel('Predicted label')
 
 # load data
-raw_data = pd.read_csv('merge_data.csv', header=None)
+raw_data = pd.read_csv('taekwondo_data.csv', header=None)
 raw_data = raw_data.dropna(axis=0)
 dataset = raw_data.values
 X = dataset[:, :36].astype(float)
@@ -123,13 +123,13 @@ model.add(Dense(units=3, activation='softmax'))  # units = nums of classes
 
 # training
 his = LossHistory()
-model.compile(loss='categorical_crossentropy', optimizer=Adam(0.0001), metrics=['accuracy'])
-# model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+# model.compile(loss='categorical_crossentropy', optimizer=Adam(0.0001), metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 model.fit(X_train, Y_train, batch_size=32, epochs=20, verbose=1, validation_data=(X_test, Y_test), callbacks=[his])
 model.summary()
 his.loss_plot('epoch')
-model.save('taekwondo_recognition.h5')
-# model.save('rmsprop_taekwondo_recognition.h5')
+# model.save('taekwondo_recognition.h5')
+model.save('rmsprop_taekwondo_recognition.h5')
 
 # # evaluate and draw confusion matrix
 print('Test:')
