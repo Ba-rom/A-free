@@ -27,19 +27,19 @@ class Track:
     track_id : int
         A unique track identifier.
     n_init : int
-        连续 n_init 帧检测到某一track，则将该track定义为confirmed；
-        若在这 n_init 帧中track出现丢失，则直接定为deleted
+        If a track is detected in consecutive n_init frames, the track is defined as confirmed;
+        If the track is lost in this n_init frame, it is directly determined as deleted
     max_age : int
-        连续 max_age 帧没有检测到某一track，将其定义为deleted
+        If a track is not detected for consecutive max_age frames, it is defined as deleted
     feature : Optional[ndarray]
         Feature vector of the detection this track originates from. If not None,
         this feature is added to the `features` cache.
 OAOA    Attributes
     ----------
     mean : ndarray
-        Mean vector of the initial state distribution.（均值向量）
+        Mean vector of the initial state distribution.
     covariance : ndarray
-        Covariance matrix of the initial state distribution.（协方差矩阵）
+        Covariance matrix of the initial state distribution.
     track_id : int
         A unique track identifier.
     hits : int
@@ -73,7 +73,7 @@ class Track:
 
     def to_tlwh(self):
         """Get current position in bounding box format `(top left x, top left y, width, height)`.
-            bounding box的第一种表达方式
+            The first expression of bounding box
         """
         ret = self.mean[:4].copy()
         ret[2] *= ret[3]
@@ -82,7 +82,7 @@ class Track:
 
     def to_tlbr(self):
         """Get current position in bounding box format `(min x, miny, max x, max y)`.
-            bounding box的第二种表达方式
+            The second expression of bounding box
         """
         ret = self.to_tlwh()
         ret[2:] = ret[:2] + ret[2:]

@@ -4,7 +4,6 @@ import numpy as np
 import cv2
 import tensorflow as tf
 
-
 def _run_in_batches(f, data_dict, out, batch_size):
     data_len = len(out)
     num_batches = int(data_len / batch_size)
@@ -17,7 +16,6 @@ def _run_in_batches(f, data_dict, out, batch_size):
     if e < len(out):
         batch_data_dict = {k: v[e:] for k, v in data_dict.items()}
         out[e:] = f(batch_data_dict)
-
 
 def extract_image_patch(image, bbox, patch_shape):
     """Extract image patch from bounding box.
@@ -62,7 +60,6 @@ def extract_image_patch(image, bbox, patch_shape):
     image = cv2.resize(image, tuple(patch_shape[::-1]))
     return image
 
-
 class ImageEncoder(object):
     def __init__(self, checkpoint_filename, input_name="images", output_name="features"):
         with tf.gfile.GFile(checkpoint_filename, "rb") as f:
@@ -88,7 +85,6 @@ class ImageEncoder(object):
             {self.input_var: data_x}, out, batch_size)
         return out
 
-
 def create_box_encoder(model_filename, input_name="images", output_name="features", batch_size=32):
     image_encoder = ImageEncoder(model_filename, input_name, output_name)
     image_shape = image_encoder.image_shape
@@ -105,7 +101,6 @@ def create_box_encoder(model_filename, input_name="images", output_name="feature
         return image_encoder(image_patches, batch_size)
 
     return encoder
-
 
 def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
     """Generate detections with features.
@@ -162,34 +157,3 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
 
         output_filename = os.path.join(output_dir, "%s.npy" % sequence)
         np.save(output_filename, np.asarray(detections_out), allow_pickle=False)
-
-#
-# def parse_args():
-#     """Parse command line arguments.
-#     """
-#     parser = argparse.ArgumentParser(description="Re-ID feature extractor")
-#     parser.add_argument(
-#         "--model",
-#         default="resources/networks/mars-small128.pb",
-#         help="Path to freezed inference graph protobuf.")
-#     parser.add_argument(
-#         "--mot_dir", help="Path to MOTChallenge directory (train or test)",
-#         required=True)
-#     parser.add_argument(
-#         "--detection_dir", help="Path to custom detections. Defaults to "
-#         "standard MOT detections Directory structure should be the default "
-#         "MOTChallenge structure: [sequence]/det/det.txt", default=None)
-#     parser.add_argument(
-#         "--output_dir", help="Output directory. Will be created if it does not"
-#         " exist.", default="detections")
-#     return parser.parse_args()
-#
-#
-# def main():
-#     args = parse_args()
-#     encoder = create_box_encoder(args.model, batch_size=32)
-#     generate_detections(encoder, args.mot_dir, args.output_dir, args.detection_dir)
-#
-#
-# if __name__ == "__main__":
-#     main()
