@@ -100,12 +100,8 @@ dataset = raw_data.values
 X = dataset[:, :36].astype(float)
 Y = dataset[:, 36].astype(int)
 
-# encoder = LabelEncoder()
-# encoder_Y = encoder.fit_transform(Y)
-# print(encoder_Y[0], encoder_Y[900], encoder_Y[1800], encoder_Y[2700])
-# encoder_Y = [0]*744 + [1]*722 + [2]*815 + [3]*1008 + [4]*811
 encoder_Y = [0]*9379 + [1]*2007 + [2]*462
-# one hot 编码
+# one hot vector 
 dummy_Y = np_utils.to_categorical(encoder_Y)
 
 # train test split
@@ -119,17 +115,15 @@ model.add(Dense(units=64, activation='relu'))
 model.add(BatchNormalization())
 model.add(Dense(units=16, activation='relu'))
 model.add(BatchNormalization())
-model.add(Dense(units=3, activation='softmax'))  # units = nums of classes
+model.add(Dense(units=3, activation='softmax'))
 
 # training
 his = LossHistory()
-# model.compile(loss='categorical_crossentropy', optimizer=Adam(0.0001), metrics=['accuracy'])
-model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=Adam(0.0001), metrics=['accuracy'])
 model.fit(X_train, Y_train, batch_size=32, epochs=20, verbose=1, validation_data=(X_test, Y_test), callbacks=[his])
 model.summary()
 his.loss_plot('epoch')
-# model.save('taekwondo_recognition.h5')
-model.save('rmsprop_taekwondo_recognition.h5')
+model.save('taekwondo_recognition.h5')
 
 # # evaluate and draw confusion matrix
 print('Test:')
@@ -148,7 +142,6 @@ plt.show()
 
 # test
 # model = load_model('taekwondo_recognition.h5')
-# model = load_model('rmsprop_taekwondo_recognition.h5')
 #
 # test_input = [0.43, 0.46, 0.43, 0.52, 0.4, 0.52, 0.39, 0.61, 0.4,
 #               0.67, 0.46, 0.52, 0.46, 0.61, 0.46, 0.67, 0.42, 0.67,
