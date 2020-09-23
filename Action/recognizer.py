@@ -26,75 +26,8 @@ tracker = Tracker(metric)
 # track_box 색상
 trk_clr = (0, 255, 0)
 
-
-# class ActionRecognizer(object):
-#     @staticmethod
-#     def load_action_premodel(model):
-#         return load_model(model)
-#
-#     @staticmethod
-#     def framewise_recognize(pose, pretrained_model):
-#         frame, joints, bboxes, xcenter = pose[0], pose[1], pose[2], pose[3]
-#         joints_norm_per_frame = np.array(pose[-1])
-#
-#         if bboxes:
-#             bboxes = np.array(bboxes)
-#             features = encoder(frame, bboxes)
-#
-#             # score to 1.0 here).
-#             detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(bboxes, features)]
-#
-#             # 비 최대 억제
-#             boxes = np.array([d.tlwh for d in detections])
-#             scores = np.array([d.confidence for d in detections])
-#             indices = preprocessing.non_max_suppression(boxes, nms_max_overlap, scores)
-#             detections = [detections[i] for i in indices]
-#
-#             # 이전 tracker 실시간으로 업데이트
-#             tracker.predict()
-#             tracker.update(detections)
-#
-#             # 녹음 track 결과，포함bounding boxes 과ID
-#             trk_result = []
-#             for trk in tracker.tracks:
-#                 if not trk.is_confirmed() or trk.time_since_update > 1:
-#                     continue
-#                 bbox = trk.to_tlwh()
-#                 trk_result.append([bbox[0], bbox[1], bbox[2], bbox[3], trk.track_id])
-#                 # 상표track_ID
-#                 trk_id = 'ID-' + str(trk.track_id)
-#                 cv.putText(frame, trk_id, (int(bbox[0]), int(bbox[1]-45)), cv.FONT_HERSHEY_SIMPLEX, 0.8, trk_clr, 3)
-#
-#             for d in trk_result:
-#                 xmin = int(d[0])
-#                 ymin = int(d[1])
-#                 xmax = int(d[2]) + xmin
-#                 ymax = int(d[3]) + ymin
-#                 # id = int(d[4])
-#                 try:
-#                     # xcenter는 이미지 프레임에서 모든 인간의 No.1 조인트 포인트임(neck）X좌표 값
-#                     # track_box와 human xcenter 사이의 거리를 계산하여 ID 매칭을 수행함
-#                     tmp = np.array([abs(i - (xmax + xmin) / 2.) for i in xcenter])
-#                     j = np.argmin(tmp)
-#                 except:
-#                     #  현재 프래임에 사람이 없으면 기본값 j=0(무효)
-#                     j = 0
-#
-#                 # 행동 분류 수행
-#                 if joints_norm_per_frame.size > 0:
-#                     joints_norm_single_person = joints_norm_per_frame[j*36:(j+1)*36]
-#                     joints_norm_single_person = np.array(joints_norm_single_person).reshape(-1, 36)
-#                     pred = np.argmax(pretrained_model.predict(joints_norm_single_person))
-#                     init_label = Actions(pred).name
-#                     # 액션 카테고리 표시
-#                     cv.putText(frame, init_label, (xmin + 80, ymin - 45), cv.FONT_HERSHEY_SIMPLEX, 1, trk_clr, 3)
-#                 # track_box 그리기
-#                 cv.rectangle(frame, (xmin - 10, ymin - 30), (xmax + 10, ymax), trk_clr, 2)
-#         return frame
-
 def load_action_premodel(model):
     return load_model(model)
-
 
 def framewise_recognize(pose, pretrained_model):
     frame, joints, bboxes, xcenter = pose[0], pose[1], pose[2], pose[3]
@@ -133,7 +66,6 @@ def framewise_recognize(pose, pretrained_model):
             ymin = int(d[1])
             xmax = int(d[2]) + xmin
             ymax = int(d[3]) + ymin
-            # id = int(d[4])
             try:
                 # xcenter는 이미지 프레임에서 모든 인간의 No.1 조인트 포인트임(neck）X좌표 값
                 # track_box와 human xcenter 사이의 거리를 계산하여 ID 매칭을 수행함
